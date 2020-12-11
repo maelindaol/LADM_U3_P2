@@ -90,16 +90,16 @@ class MainActivity : AppCompatActivity() {
         }
         cargarContactos()
     }
-    private fun eliminar(){
-        baseRemota.collection("EVENTO")
-            .document()
+    private fun eliminarCloud(idLista:String){
+        mensaje(idLista)
+        baseRemota.collection("evento")
+            .document(idLista)
             .delete()
             .addOnSuccessListener {
-                Toast.makeText(this,"SE ELIMINO",Toast.LENGTH_LONG)
-                    .show()
+                Toast.makeText(this,"SE ELIMINO CON EXITO",Toast.LENGTH_LONG)
             }
             .addOnFailureListener {
-                mensaje("ERROR: NO SE ELIMINO\n"+it.message)
+                mensaje("ERROR AL ELIMINAR FIRESTORE")
             }
     }
     private fun limpiarCampos(){
@@ -191,10 +191,12 @@ class MainActivity : AppCompatActivity() {
             var trans = baseDatos.writableDatabase
             var resultado = trans.delete("EVENTO","ID=?",
                 arrayOf(ideliminar))
+            eliminarCloud(ideliminar.toString())
             if (resultado==0){
                 mensaje("ERROR! No se pudo eliminar")
             }else{
                 mensaje("Se logro eliminar con éxito el ID ${ideliminar}")
+
             }
             trans.close()
             cargarContactos()
